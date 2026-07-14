@@ -1,0 +1,267 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+confirmar_cita.agi
+==================
+Sistema de Confirmación de Citas — CUY5132 (Comunicaciones Unificadas, Duoc UC).
+
+Script AGI que atiende la llamada, locuta los datos de la cita combinando
+audios grabados (custom/) con la fecha y hora en español (say_date/say_time),
+captura la respuesta del paciente por DTMF (1=Confirmar, 2=Cancelar,
+3=Reagendar) y registra el resultado en resultados.csv.
+
+DATOS:
+  - Entrada:  citas.csv       (anexo,paciente,especialidad,fecha,hora,audio_especialidad)
+  - Salida:   resultados.csv  (anexo,respondio,opcion,timestamp) -- append
+
+TU TAREA (parametrización):
+  - Editar citas.csv con tus anexos, pacientes, fechas y horas.
+  - Ajustar/grabar los audios de especialidad si agregas nuevas.
+  - Desplegar, probar y documentar el funcionamiento en tu informe.
+
+Las rutas de archivos y audios se configuran en la sección CONFIGURACIÓN.
+Revisa el README.md y la GUIA_MONTAJE.md del repositorio para el despliegue.
+"""
+
+import sys
+import os
+import csv
+import logging
+from datetime import datetime
+
+from asterisk.agi import AGI
+
+# ===========================================================================
+# CONFIGURACIÓN
+# ===========================================================================
+CITAS_CSV      = "/var/lib/asterisk/agi-bin/citas.csv"
+RESULTADOS_CSV = "/var/lib/asterisk/agi-bin/resultados.csv"
+LOG_PATH       = "/var/log/asterisk/confirmar_cita.log"
+
+DTMF_A_OPCION = {
+    "1": "confirma",
+    "2": "cancela",
+    "3": "reagenda",
+}
+
+AUDIO_BIENVENIDA    = "custom/bienvenida"
+AUDIO_A_LAS         = "custom/a_las"
+AUDIO_DE            = "custom/de"
+AUDIO_MENU          = "custom/menu_opciones"
+AUDIO_NO_ENCONTRADA = "custom/no_encontrada"
+AUDIO_DESPEDIDA     = "custom/despedida"
+AUDIO_ERROR         = "custom/error_sistema"
+
+RESULTADOS_HEADER = ["anexo", "respondio", "opcion", "timestamp"]
+
+
+# ===========================================================================
+# LOGGING
+# ===========================================================================
+def configurar_log():
+    logging.basicConfig(
+        filename=LOG_PATH,
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(message)s",
+    )
+    return logging.getLogger("confirmar_cita")
+
+
+# ===========================================================================
+# ACCESO A DATOS (CSV)
+# ===========================================================================
+def buscar_cita(anexo):
+    """Busca en citas.csv la fila cuyo 'anexo' coincide. Devuelve dict o None."""
+    try:
+        with open(CITAS_CSV, newline="", encoding="utf-8") as f:
+            for fila in csv.DictReader(f):
+                if fila.get("anexo") == str(anexo):
+                    return fila
+    except FileNotFoundError:
+        return None
+    return None
+
+
+def registrar_resultado(anexo, respondio, opcion):
+    """APPEND de una línea en resultados.csv. Crea el encabezado si no existe."""
+    archivo_nuevo = not os.path.exists(RESULTADOS_CSV)
+    with open(RESULTADOS_CSV, "a", newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        if archivo_nuevo:
+            w.writerow(RESULTADOS_HEADER)
+        w.writerow([
+            anexo, respondio, opcion,
+            datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        ])
+
+
+# ===========================================================================
+# LOCUCIÓN POR FRAGMENTOS
+# ===========================================================================
+def locutar_cita(agi, cita, log):
+    """
+    Reproduce: bienvenida + fecha (say_date) + "a las" + hora (say_time)
+    + "de" + audio de especialidad.
+    """
+    # Bienvenida
+    agi.stream_file(AUDIO_BIENVENIDA)
+
+    # Convertir "YYYY-MM-DD" + "HH:MM" a epoch para say_date / say_time
+    try:
+        dt = datetime.strptime(
+            f"{cita['fecha']} {cita['hora']}", "%Y-%m-%d %H:%M"
+        )
+        epoch = int(dt.timestamp())
+    except (ValueError, KeyError) as e:
+        log.warning("Fecha/hora inválida en cita: %s", e)
+        epoch = None
+
+    if epoch is not None:
+        # say_date: día de la semana, día, mes, año (en idioma del canal)
+        agi.say_date(epoch)
+        # Conector "a las"
+        agi.stream_file(AUDIO_A_LAS)
+        # say_time: hora y minutos
+        agi.say_time(epoch)
+
+    # Conector "de" + especialidad grabada
+    agi.stream_file(AUDIO_DE)
+    audio_esp = cita.get("audio_especialidad")
+    if audio_esp:
+        agi.stream_file(audio_esp)
+
+
+def capturar_respuesta(agi, log):
+    """
+    Reproduce el menú y captura UNA tecla DTMF válida (1, 2 o 3).
+    Reintenta hasta 3 veces. Devuelve la tecla (str) o None.
+    """
+    MAX_INTENTOS = 3
+    for intento in range(MAX_INTENTOS):
+        # get_data reproduce el audio y captura dígitos.
+        # timeout en ms, max_digits=1 -> una sola tecla.
+        tecla = agi.get_data(AUDIO_MENU, 5000, 1)
+        if tecla and tecla in DTMF_A_OPCION:
+            return tecla
+        log.info("Intento %d: tecla inválida o sin respuesta (%r)",
+                 intento + 1, tecla)
+    return None
+
+def actualizar_estado_cita(anexo, nuevo_estado):
+    """
+    Actualiza el estado de la cita en citas.csv.
+    """
+    filas = []
+    encontrado = False
+
+    with open(CITAS_CSV, newline="", encoding="utf-8") as f:
+        lector = csv.DictReader(f)
+        campos = lector.fieldnames or []
+
+        if "estado" not in campos:
+            campos.append("estado")
+
+        for fila in lector:
+            if fila.get("anexo") == str(anexo):
+                fila["estado"] = nuevo_estado
+                encontrado = True
+            elif not fila.get("estado"):
+                fila["estado"] = "pendiente"
+
+            filas.append(fila)
+
+    if not encontrado:
+        return False
+
+    temporal = CITAS_CSV + ".tmp"
+
+    with open(temporal, "w", newline="", encoding="utf-8") as f:
+        escritor = csv.DictWriter(f, fieldnames=campos)
+        escritor.writeheader()
+        escritor.writerows(filas)
+
+    os.replace(temporal, CITAS_CSV)
+    return True
+# ===========================================================================
+# MAIN
+# ===========================================================================
+def main():
+    log = configurar_log()
+    agi = AGI()
+
+    try:
+        # 1. Anexo
+        if len(sys.argv) > 1:
+            anexo = sys.argv[1]
+        else:
+            anexo = agi.get_variable("CALLERID(num)")
+
+        log.info("Llamada entrante. Anexo=%s", anexo)
+        agi.verbose(f"Procesando confirmacion para anexo: {anexo}", 1)
+
+        # 2. Buscar cita
+        cita = buscar_cita(anexo)
+        if cita is None:
+            log.warning("Sin cita para anexo %s", anexo)
+            agi.stream_file(AUDIO_NO_ENCONTRADA)
+            agi.hangup()
+            return
+
+        log.info("Cita encontrada anexo=%s paciente=%s",
+                 anexo, cita.get("paciente"))
+
+        # 3. Locutar datos
+        locutar_cita(agi, cita, log)
+
+        # 4. Capturar DTMF
+        tecla = capturar_respuesta(agi, log)
+
+        if tecla is None:
+            log.info("Sin respuesta valida para anexo=%s", anexo)
+            registrar_resultado(anexo, "no", "")
+            agi.stream_file(AUDIO_DESPEDIDA)
+            agi.hangup()
+            return
+
+        opcion = DTMF_A_OPCION[tecla]
+
+        ESTADO_POR_OPCION = {
+            "confirma": "confirmada",
+            "cancela": "cancelada",
+            "reagenda": "reprogramacion_solicitada",
+        }
+
+        nuevo_estado = ESTADO_POR_OPCION[opcion]
+
+        # 5. Actualizar cita y registrar resultado
+        if actualizar_estado_cita(anexo, nuevo_estado):
+            registrar_resultado(anexo, "si", opcion)
+
+            log.info(
+                "Anexo=%s respondio=si opcion=%s estado=%s (tecla %s)",
+                anexo,
+                opcion,
+                nuevo_estado,
+                tecla
+            )
+        else:
+            log.error(
+                "No fue posible actualizar la cita del anexo=%s",
+                anexo
+            )
+
+        # 6. Cierre
+        agi.stream_file(AUDIO_DESPEDIDA)
+        agi.hangup()
+
+    except Exception as e:
+        log.exception("Error no controlado en el AGI: %s", e)
+        try:
+            agi.stream_file(AUDIO_ERROR)
+            agi.hangup()
+        except Exception:
+            pass
+
+
+if __name__ == "__main__":
+    main()
