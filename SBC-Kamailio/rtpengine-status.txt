@@ -1,0 +1,22 @@
+● rtpengine-daemon.service - RTP/media Proxy Daemon
+     Loaded: loaded (/usr/lib/systemd/system/rtpengine-daemon.service; enabled; preset: enabled)
+     Active: active (running) since Wed 2026-07-15 07:14:09 UTC; 2h 55min ago
+       Docs: man:rtpengine(8)
+    Process: 6654 ExecStartPre=/usr/sbin/rtpengine-iptables-setup start (code=exited, status=0/SUCCESS)
+   Main PID: 6661 (rtpengine)
+      Tasks: 25 (limit: 4520)
+     Memory: 9.2M (peak: 9.6M)
+        CPU: 1.949s
+     CGroup: /system.slice/rtpengine-daemon.service
+             └─6661 /usr/bin/rtpengine -f -E --no-log-timestamps --pidfile /run/rtpengine/rtpengine-daemon.pid --config-file /etc/rtpengine/rtpengine.conf
+
+Jul 15 09:51:44 ip-172-31-24-222 rtpengine[6661]: INFO: [d98343cb2c734ed183133be546dfeea6]: [core] --------- Port   172.31.24.222:16539 <>   190.114.40.50:7187  (RTCP), SSRC 5e0166fb, in 6 p, 436 b, 0 e, 30 ts, out 6 p, 436 b, 0 e
+Jul 15 09:51:44 ip-172-31-24-222 rtpengine[6661]: INFO: [d98343cb2c734ed183133be546dfeea6]: [core] --- SSRC 5e0166fb
+Jul 15 09:51:44 ip-172-31-24-222 rtpengine[6661]: INFO: [d98343cb2c734ed183133be546dfeea6]: [core] ------ Average MOS 3.9, lowest MOS 3.9 (at 0:10), highest MOS 3.9 (at 0:10) lost:0
+Jul 15 09:51:44 ip-172-31-24-222 rtpengine[6661]: INFO: [d98343cb2c734ed183133be546dfeea6]: [core] ------ respective (avg/min/max) jitter 0/0/0 ms, RTT-e2e 251.4/251.4/251.4 ms, RTT-dsct 134.0/134.0/134.0 ms, packet loss 0/0/0%
+Jul 15 09:52:57 ip-172-31-24-222 rtpengine[6661]: INFO: [e55c1672f13b4c858e3a608199f849bf]: [control] Received command 'offer' from 127.0.0.1:43602
+Jul 15 09:52:57 ip-172-31-24-222 rtpengine[6661]: NOTICE: [e55c1672f13b4c858e3a608199f849bf]: [core] Creating new call
+Jul 15 09:52:57 ip-172-31-24-222 rtpengine[6661]: INFO: [e55c1672f13b4c858e3a608199f849bf]: [control] Replying to 'offer' from 127.0.0.1:43602 (elapsed time 0.000360 sec)
+Jul 15 09:53:48 ip-172-31-24-222 rtpengine[6661]: INFO: [b7a851c77edf46e282b7338afc90bdb6]: [control] Received command 'offer' from 127.0.0.1:35294
+Jul 15 09:53:48 ip-172-31-24-222 rtpengine[6661]: NOTICE: [b7a851c77edf46e282b7338afc90bdb6]: [core] Creating new call
+Jul 15 09:53:48 ip-172-31-24-222 rtpengine[6661]: INFO: [b7a851c77edf46e282b7338afc90bdb6]: [control] Replying to 'offer' from 127.0.0.1:35294 (elapsed time 0.000318 sec)

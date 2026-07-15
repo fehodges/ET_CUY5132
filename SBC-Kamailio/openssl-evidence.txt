@@ -1,0 +1,51 @@
+CONNECTED(00000003)
+---
+Certificate chain
+ 0 s:C = CL, ST = RM, L = Santiago, O = DUOC-UC, OU = VoIP-Lab, CN = 54.80.130.201
+   i:C = CL, ST = RM, L = Santiago, O = DUOC-UC, OU = VoIP-Lab, CN = 54.80.130.201
+   a:PKEY: rsaEncryption, 2048 (bit); sigalg: RSA-SHA256
+   v:NotBefore: Jul 15 08:57:07 2026 GMT; NotAfter: Jul 15 08:57:07 2027 GMT
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIIDtTCCAp2gAwIBAgIULQrLSIDRVdKWdsk7XR1TJIrnZGowDQYJKoZIhvcNAQEL
+BQAwajELMAkGA1UEBhMCQ0wxCzAJBgNVBAgMAlJNMREwDwYDVQQHDAhTYW50aWFn
+bzEQMA4GA1UECgwHRFVPQy1VQzERMA8GA1UECwwIVm9JUC1MYWIxFjAUBgNVBAMM
+DTU0LjgwLjEzMC4yMDEwHhcNMjYwNzE1MDg1NzA3WhcNMjcwNzE1MDg1NzA3WjBq
+MQswCQYDVQQGEwJDTDELMAkGA1UECAwCUk0xETAPBgNVBAcMCFNhbnRpYWdvMRAw
+DgYDVQQKDAdEVU9DLVVDMREwDwYDVQQLDAhWb0lQLUxhYjEWMBQGA1UEAwwNNTQu
+ODAuMTMwLjIwMTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMub6j48
+qaOxoBlvAF1Brrn9BC/1wBl+03aUfbAg8yDnngt3pZD5wp94jO9afL0HyiiDGmyY
+uVjwgNkmSlwU5oc+rmYu0fhwV6QrBF0mv6GGKd69/T4FHZI8TFM2eIdRbQxfBPFR
+ggf+aRdnxTqu6Czr3ASU8TXgFudb8bg+EHeu/NSFsGTM06NpgEBoBTbT4I1WgK4B
+vV58K+yPCtcOn221hODMNZKiuWYuCh0ehhhlU/D0ygIsUo1VBybAp4SAPP7ZwWtz
+xYYEdQXS8WUAmlyT/n/DQT7FS5Lr6NPdZYkTfAMW/2n9j91VGixPrDvAiaxnMPPK
+CQgSPeIGKxNwwOkCAwEAAaNTMFEwHQYDVR0OBBYEFMJyX9frmdEX52E0rGS6+uLw
+SgQQMB8GA1UdIwQYMBaAFMJyX9frmdEX52E0rGS6+uLwSgQQMA8GA1UdEwEB/wQF
+MAMBAf8wDQYJKoZIhvcNAQELBQADggEBAHirKREKnmfwWnUMpEhwY7itHmT2MXfl
+Fmm53esVD4N0u+XEzY6+LJy0/ILqDRTZbHohSv7vq2hV9PoqUMITSvOdsVDy0xLC
+Lb+sv3vapjZyuiXWXXanfwmtQDQ7y0eOJpGyINFd721xJ1w+2jrb9C6WeASj7/ls
+5+yOpZbtmymSC2tG7IobbBLEtKTuiPQ+DZvevh34on+BWgWEm9B6scgf7rh+jSNi
+Qs2zlrPhdYeJ2qWSdp/aMutXPyqhyayQfab1zbXNuOR/a4C5ZqG1Zht0n9XBadz1
+6rhFKkWaVUvKnw+XUqKzz4Lp8B42/GJeTcVluWEg7iNWrBq/9QESpzc=
+-----END CERTIFICATE-----
+subject=C = CL, ST = RM, L = Santiago, O = DUOC-UC, OU = VoIP-Lab, CN = 54.80.130.201
+issuer=C = CL, ST = RM, L = Santiago, O = DUOC-UC, OU = VoIP-Lab, CN = 54.80.130.201
+---
+No client certificate CA names sent
+Peer signing digest: SHA256
+Peer signature type: RSA-PSS
+Server Temp Key: X25519, 253 bits
+---
+SSL handshake has read 1509 bytes and written 373 bytes
+Verification error: self-signed certificate
+---
+New, TLSv1.3, Cipher is TLS_AES_256_GCM_SHA384
+Server public key is 2048 bit
+Secure Renegotiation IS NOT supported
+Compression: NONE
+Expansion: NONE
+No ALPN negotiated
+Early data was not sent
+Verify return code: 18 (self-signed certificate)
+---

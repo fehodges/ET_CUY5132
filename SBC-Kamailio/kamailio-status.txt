@@ -1,0 +1,38 @@
+● kamailio.service - Kamailio - the Open Source SIP Server
+     Loaded: loaded (/usr/lib/systemd/system/kamailio.service; enabled; preset: enabled)
+     Active: active (running) since Wed 2026-07-15 09:05:34 UTC; 1h 3min ago
+       Docs: man:kamailio(8)
+    Process: 7626 ExecStart=/usr/sbin/kamailio -P /run/kamailio/kamailio.pid -f $CFGFILE -m $SHM_MEMORY -M $PKG_MEMORY (code=exited, status=0/SUCCESS)
+   Main PID: 7629 (kamailio)
+      Tasks: 17 (limit: 4520)
+     Memory: 21.4M (peak: 21.7M)
+        CPU: 3.461s
+     CGroup: /system.slice/kamailio.service
+             ├─7629 /usr/sbin/kamailio -P /run/kamailio/kamailio.pid -f /etc/kamailio/kamailio.cfg -m 64 -M 8
+             ├─7630 /usr/sbin/kamailio -P /run/kamailio/kamailio.pid -f /etc/kamailio/kamailio.cfg -m 64 -M 8
+             ├─7631 /usr/sbin/kamailio -P /run/kamailio/kamailio.pid -f /etc/kamailio/kamailio.cfg -m 64 -M 8
+             ├─7632 /usr/sbin/kamailio -P /run/kamailio/kamailio.pid -f /etc/kamailio/kamailio.cfg -m 64 -M 8
+             ├─7633 /usr/sbin/kamailio -P /run/kamailio/kamailio.pid -f /etc/kamailio/kamailio.cfg -m 64 -M 8
+             ├─7634 /usr/sbin/kamailio -P /run/kamailio/kamailio.pid -f /etc/kamailio/kamailio.cfg -m 64 -M 8
+             ├─7635 /usr/sbin/kamailio -P /run/kamailio/kamailio.pid -f /etc/kamailio/kamailio.cfg -m 64 -M 8
+             ├─7636 /usr/sbin/kamailio -P /run/kamailio/kamailio.pid -f /etc/kamailio/kamailio.cfg -m 64 -M 8
+             ├─7637 /usr/sbin/kamailio -P /run/kamailio/kamailio.pid -f /etc/kamailio/kamailio.cfg -m 64 -M 8
+             ├─7638 /usr/sbin/kamailio -P /run/kamailio/kamailio.pid -f /etc/kamailio/kamailio.cfg -m 64 -M 8
+             ├─7639 /usr/sbin/kamailio -P /run/kamailio/kamailio.pid -f /etc/kamailio/kamailio.cfg -m 64 -M 8
+             ├─7640 /usr/sbin/kamailio -P /run/kamailio/kamailio.pid -f /etc/kamailio/kamailio.cfg -m 64 -M 8
+             ├─7641 /usr/sbin/kamailio -P /run/kamailio/kamailio.pid -f /etc/kamailio/kamailio.cfg -m 64 -M 8
+             ├─7642 /usr/sbin/kamailio -P /run/kamailio/kamailio.pid -f /etc/kamailio/kamailio.cfg -m 64 -M 8
+             ├─7643 /usr/sbin/kamailio -P /run/kamailio/kamailio.pid -f /etc/kamailio/kamailio.cfg -m 64 -M 8
+             ├─7644 /usr/sbin/kamailio -P /run/kamailio/kamailio.pid -f /etc/kamailio/kamailio.cfg -m 64 -M 8
+             └─7645 /usr/sbin/kamailio -P /run/kamailio/kamailio.pid -f /etc/kamailio/kamailio.cfg -m 64 -M 8
+
+Jul 15 09:58:20 ip-172-31-24-222 /usr/sbin/kamailio[7641]: INFO: <script>: [REGISTER] sip:1002@54.80.130.201 -> sip:54.80.130.201:5061;transport=tls (src=190.114.40.50:7234)
+Jul 15 09:58:20 ip-172-31-24-222 /usr/sbin/kamailio[7641]: INFO: <script>: REGISTER de sip:1002@54.80.130.201
+Jul 15 10:03:16 ip-172-31-24-222 /usr/sbin/kamailio[7642]: INFO: <script>: [REGISTER] sip:1001@54.80.130.201 -> sip:54.80.130.201:5061;transport=tls (src=190.114.40.50:7233)
+Jul 15 10:03:16 ip-172-31-24-222 /usr/sbin/kamailio[7642]: INFO: <script>: REGISTER de sip:1001@54.80.130.201
+Jul 15 10:03:16 ip-172-31-24-222 /usr/sbin/kamailio[7643]: INFO: <script>: [REGISTER] sip:1002@54.80.130.201 -> sip:54.80.130.201:5061;transport=tls (src=190.114.40.50:7234)
+Jul 15 10:03:16 ip-172-31-24-222 /usr/sbin/kamailio[7643]: INFO: <script>: REGISTER de sip:1002@54.80.130.201
+Jul 15 10:08:11 ip-172-31-24-222 /usr/sbin/kamailio[7644]: INFO: <script>: [REGISTER] sip:1001@54.80.130.201 -> sip:54.80.130.201:5061;transport=tls (src=190.114.40.50:7233)
+Jul 15 10:08:11 ip-172-31-24-222 /usr/sbin/kamailio[7644]: INFO: <script>: REGISTER de sip:1001@54.80.130.201
+Jul 15 10:08:11 ip-172-31-24-222 /usr/sbin/kamailio[7641]: INFO: <script>: [REGISTER] sip:1002@54.80.130.201 -> sip:54.80.130.201:5061;transport=tls (src=190.114.40.50:7234)
+Jul 15 10:08:11 ip-172-31-24-222 /usr/sbin/kamailio[7641]: INFO: <script>: REGISTER de sip:1002@54.80.130.201
